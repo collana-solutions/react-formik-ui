@@ -1,9 +1,14 @@
 {
-  "name": "@neolution-ch/react-formik-ui",
+  "name": "@collana-solutions/react-formik-ui",
   "version": "2.1.2",
   "description": "Common Form Elements",
+  "homepage": "https://github.com/collana-solutions/react-formik-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collana-solutions/react-formik-ui"
+  },
   "license": "MIT",
-  "author": "Neolution",
+  "author": "collana solutions AG",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
@@ -12,18 +17,21 @@
   ],
   "scripts": {
     "build": "shx rm -rf dist && microbundle --jsx React.createElement --jsxFragment React.Fragment --jsxImportSource react --globals react/jsx-runtime=jsx --no-compress --tsconfig ./tsconfig.microbundle.json",
-    "build-storybook": "build-storybook",
+    "build-storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider build-storybook",
     "lint": "eslint \"**/*.{ts,tsx}\" --cache --max-warnings 0",
-    "prepack": "yarn build",
-    "prepare-pr": "yarn prettier . --write && yarn lint && yarn build && yarn test\"",
+    "prepack": "pnpm run build",
+    "prepare-pr": "pnpm exec prettier . --write && pnpm run lint && pnpm run build && pnpm run test",
     "prettier-check": "prettier --check .",
     "prettier-write": "prettier --write .",
     "start": "microbundle watch --jsx React.createElement --jsxFragment React.Fragment --jsxImportSource react --globals react/jsx-runtime=jsx --no-compress --tsconfig ./tsconfig.microbundle.json",
-    "start-all": "concurrently \"yarn start\" \"yarn start-yalc\"",
-    "start-yalc": "yarn nodemon --watch dist -x \"yarn yalc push\"",
-    "storybook": "start-storybook -p 6006",
+    "start-all": "concurrently \"pnpm run start\" \"pnpm run start-yalc\"",
+    "start-yalc": "nodemon --watch dist -x \"yalc push\"",
+    "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
     "test": "cross-env DEBUG_PRINT_LIMIT=100 jest",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "dependencies": {
     "react-datepicker": "^4.8.0",
@@ -31,6 +39,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "@storybook/addon-actions": "^6.4.22",
     "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.4.22",
@@ -47,6 +57,7 @@
     "@types/react-datepicker": "^4.4.2",
     "@types/react-dom": "^17.0.3",
     "@types/reactstrap": "^8.7.2",
+    "@types/testing-library__jest-dom": "^5.14.3",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "babel-loader": "^8.2.4",
@@ -69,10 +80,10 @@
     "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-storybook": "^0.5.8",
     "formik": "^2.2.6",
-    "gh-pages": "^3.2.3",
     "jest": "^27.5.1",
     "microbundle": "^0.15.0",
     "nodemon": "^2.0.15",
+    "pkg-pr-new": "^0.0.93",
     "prettier": "^2.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -90,6 +101,10 @@
   },
   "engines": {
     "node": ">=14"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "packageManager": "pnpm@11.22.0"
 }

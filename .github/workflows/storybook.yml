@@ -1,0 +1,91 @@
+name: Storybook
+
+# Publishes the storybook to https://collana-solutions.github.io/react-formik-ui.
+# GitHub Pages serves that site from the gh-pages branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+# Deployments run one after another, so an older build never overwrites a newer one.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          # The build ends up on the public site, so it never restores a cache that a pull
+          # request run could have written.
+          package-manager-cache: false
+
+      # Activates the pnpm version pinned in the root manifest packageManager field.
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm run build-storybook
+
+      - name: Upload Storybook
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: storybook-static
+          path: storybook-static
+          retention-days: 1
+          if-no-files-found: error
+
+  # The only job that can write to the repository. It runs no dependency code: it pushes
+  # the site that the build job uploaded.
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      # Pushes the site to the gh-pages branch.
+      contents: write
+    steps:
+      - name: Download Storybook
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: storybook-static
+          path: site
+
+      # Adds a commit on top of gh-pages whose tree is exactly the new site, so files of the
+      # previous build disappear. The soft reset only moves HEAD to the fetched commit and
+      # leaves the index empty for the new files. The token goes to fetch and push
+      # explicitly, so it is never stored in the git config. .nojekyll makes GitHub Pages
+      # serve the files as they are, without a Jekyll build.
+      - name: Push to gh-pages
+        working-directory: site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
+          touch .nojekyll
+          git init --quiet --initial-branch gh-pages
+          git fetch --quiet --depth 1 "$remote" gh-pages
+          git reset --quiet --soft FETCH_HEAD
+          git add --all
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet --message "Deploy storybook from ${GITHUB_SHA}"
+          git push "$remote" HEAD:refs/heads/gh-pages

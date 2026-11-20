@@ -1,11 +1,4 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+# @collana-solutions/react-formik-ui
 
 ## [2.1.2] - 2022-06-09
 
@@ -28,8 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Made package open source / public :tada:
-
-[Unreleased]: https://github.com/neolution-ch/react-formik-ui/compare/2.1.2...HEAD
 
 [2.1.2]: https://github.com/neolution-ch/react-formik-ui/compare/2.1.1...2.1.2
 

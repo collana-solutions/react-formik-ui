@@ -17,3 +17,8 @@ minimumReleaseAge: 20160
 # offending versions to minimumReleaseAgeExclude by itself, which would let the scheduled
 # Refresh lockfiles job quietly bypass the policy it is supposed to respect.
 minimumReleaseAgeStrict: true
+
+# @storybook/addon-docs 6.5 asks for the `canary` dist-tag, which pnpm import resolves
+# afresh to a newer canary whose loader needs webpack 5. This keeps the version yarn.lock had.
+overrides:
+  "@storybook/mdx1-csf": 0.0.1-canary.1.867dcd5.0
