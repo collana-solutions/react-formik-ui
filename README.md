@@ -1,6 +1,12 @@
-# @neolution-ch/formik-ui
+# @collana-solutions/react-formik-ui
 
-The @neolution-ch/formik-ui package contains common formik form elements.
+The @collana-solutions/react-formik-ui package contains common formik form elements.
+
+## Installation
+
+```shell
+npm install @collana-solutions/react-formik-ui
+```
 
 ## Storybook
 

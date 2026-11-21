@@ -36,7 +36,7 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/issues/2621
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
-    // Doesn't work with our neolution-ch packages
+    // Doesn't work with our collana-solutions packages
     "import/named": "off",
     "import/no-unresolved": "off",
     "import/default": "off",

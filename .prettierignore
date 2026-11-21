@@ -1,8 +1,14 @@
 # ignore artifacts
 dist
 node_modules
+pnpm-lock.yaml
+storybook-static
 # todo
 jest.config.cjs
-CHANGELOG.md
 
-storybook-static
+# Changesets owns everything below: the changelog it generates, and the changeset entries
+# themselves, which are transient release metadata consumed and deleted at version time.
+# scripts/generate-dependabot-changeset.mjs writes an unaligned markdown table, so without
+# this every Dependabot PR fails the format check on a file nobody reads and nothing ships.
+CHANGELOG.md
+.changeset/*.md
